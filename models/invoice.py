@@ -46,9 +46,9 @@ except ImportError:
     _logger.warning('Cannot import dicttoxml library')
 
 try:
-    import qrcode
+    import pyqrcode
 except ImportError:
-    _logger.warning('Cannot import qqrcode library')
+    _logger.warning('Cannot import pyqrcode library')
 
 try:
     import base64
@@ -143,7 +143,7 @@ class AccountInvoice(models.Model):
 
     def _get_barcode_img(self):
         for r in self:
-            texto = ''''NumFac: A02F-00117836
+            texto = '''NumFac: A02F-00117836
 FecFac: 20140319105605
 NitFac: 808183133
 DocAdq: 8081972684
@@ -152,15 +152,10 @@ ValIva: 160.00
 ValOtroIm: 0.00
 ValFacIm: 1160.00
 CUFE: 2836a15058e90baabbf6bf2e97f05564ea0324a6'''
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_L,
-                box_size=10,
-                border=4,
-            )
-            qr.add_data(texto)
-            qr.make(fit=True)
-            r.dian_barcode_img = qr.make_image(fill_color="black", back_color="white")
+            
+            qr_code = pyqrcode.create(texto)
+            img_as_str = qr_code.png_as_base64_str(scale=5)
+            r.dian_barcode_img = img_as_str
 
     vat_discriminated = fields.Boolean(
             'Discriminate VAT?',

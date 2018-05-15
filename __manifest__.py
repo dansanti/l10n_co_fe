@@ -23,7 +23,7 @@ Facturación Electrónica para Colombia.
         'python': [
             'xmltodict',
             'dicttoxml',
-            'qrcode',
+            'pyqrcode',
             'base64',
             'hashlib',
             'cchardet',
