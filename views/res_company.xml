@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record model="ir.ui.view" id="view_company_activity_inherit_form">
+		<field name="name">res.company.activities.form.inherit</field>
+		<field name="inherit_id" ref="base.view_company_form" />
+		<field name="model">res.company</field>
+		<field name="arch" type="xml">
+			<xpath expr='//notebook' position="inside">
+				<page string="Signature File">
+					<header>
+						<button string="Check Signature" type="object" name="action_process"
+							class="oe_highlight"
+							attrs="{'invisible':[('status','!=','unverified'),('key_file', '=', False)]}" />
+
+						<button string="Clean Signature" type="object" name="action_clean1"
+							attrs="{'invisible': [('status', '=', 'unverified')]}" />
+
+
+						<field name="status" widget="statusbar" />
+					</header>
+					<group attrs="{'invisible': [('status', '!=', 'unverified')]}">
+						<field name="key_file" filename="filename" />
+						<field name="filename" invisible="1" />
+						<field name="dec_pass" password="True"
+							attrs="{'readonly':[('status', '!=', 'unverified')]}" />
+					</group>
+
+					<div
+						attrs="{'invisible': [
+                              ('status', '=', 'unverified')]}">
+						<group col="4">
+							<field name="not_before" />
+							<field name="not_after" />
+						</group>
+						<group col="4" attrs="{'invisible':[('status','=','unverified')]}">
+							<field name="final_date" />
+							<field name="subject_title" />
+							<field name="subject_c" />
+							<field name="subject_serial_number"
+								attrs="{'readonly':[('subject_serial_number','=',True)]}" />
+							<field name="subject_common_name" />
+							<field name="subject_email_address" />
+							<field name="issuer_country" />
+							<field name="issuer_serial_number" />
+							<field name="issuer_common_name" />
+							<field name="issuer_email_address" />
+							<field name="issuer_organization" />
+							<field name="cert_serial_number" />
+							<field name="cert_signature_algor" />
+							<field name="cert_version" />
+							<field name="cert_hash" />
+							<field name="private_key_bits" />
+							<field name="private_key_check" />
+							<field name="private_key_type" />
+						</group>
+						<notebook>
+							<page string="Authorized Users">
+								<!-- usuarios autorizados para usar esta firma digital -->
+								<field name="authorized_users_ids" placeholder="Authorized Users for this Certificate"
+									widget="many2many_tags" options="{'no_create': True}" />
+							</page>
+							<page string="Private Key">
+								<group>
+									<field name="priv_key" />
+								</group>
+							</page>
+							<page string="Certificate Key">
+								<group>
+									<field name="cert" />
+								</group>
+							</page>
+						</notebook>
+					</div>
+				</page>
+			</xpath>
+		</field>
+	</record>
+
+</odoo>

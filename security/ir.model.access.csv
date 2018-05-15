@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dian_document_class_manager,dian.document_class.manager,model_dian_document_class,account.group_account_manager,1,1,1,1
+access_dian_document_class_user,dian.document_class.user,model_dian_document_class,,1,0,0,0
+access_journal_dian_document_class_manager,journal_dian_document_class.manager,model_account_journal_dian_document_class,account.group_account_manager,1,1,1,1
+access_journal_dian_document_class_user,journal_dian_document_class.user,model_account_journal_dian_document_class,,1,0,0,0
+access_account_invoice_referencias_manager,account_invoice_referencias_manager,model_account_invoice_referencias,account.group_account_manager,1,1,1,1
+access_account_invoice_referencias_user,account_invoice_referencias_user,model_account_invoice_referencias,,1,1,1,1
+edit_dian_cola_envio,edit_dian_cola_envio,model_dian_cola_envio,account.group_account_invoice,1,1,1,1
+access_dian_cola_envio,acess_dian_cola_envio,model_dian_cola_envio,,1,0,0,0
+access_dte_caf_manager,access_dte_caf_manager,model_dte_caf,account.group_account_manager,1,1,1,1
+access_dte_caf,access_dte_caf,model_dte_caf,,1,0,0,0
+edit_dian_xml_envio,edit_dian_xml_envio,model_dian_xml_envio,account.group_account_invoice,1,1,1,1
+access_dian_xml_envio,access_dian_xml_envio,model_dian_xml_envio,,1,0,0,0

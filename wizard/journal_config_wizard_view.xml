@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_account_journal_document_config_form" model="ir.ui.view">
+            <field name="name">account_journal_document_config.form</field>
+            <field name="model">account.journal.document_config</field>
+            <field name="arch" type="xml">
+              <form string="Journal Documents Configuration">
+                <field name="purchase" invisible="1"/>
+                <group attrs="{'invisible': [('purchase', '=', False)]}">
+                  <div> Presione Confirmar para crear todos los documentos </div>
+                </group>
+                <group attrs="{'invisible': [('purchase', '=', True)]}">
+                  <group>
+                      <field name="dte_register"/>
+                      <field name="non_dte_register"/>
+                  </group>
+                  <group attrs="{'invisible':[('dte_register', '=', False),
+                         ('non_dte_register', '=', False)]}">
+                      <field name="electronic_ticket"
+                             attrs="{'invisible':[('dte_register', '=', False)]}"/>
+                      <field name="settlement_invoice"/>
+                  </group>
+                </group>
+                <group attrs="{'invisible': [('purchase', '=', True)]}">
+                    <field name="free_tax_zone"
+                           attrs="{'invisible':[('non_dte_register', '=', False)]}"/>
+                    <field name="weird_documents"
+                           attrs="{'invisible':[('non_dte_register', '=', False)]}"/>
+
+                </group>
+                <footer>
+                    <button string="Confirm" name="confirm" type="object"
+                            class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+              </form>
+            </field>
+        </record>
+
+        <record id="action_account_journal_document_config_form" model="ir.actions.act_window">
+            <field name="name">Journal Documents Configuration</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.journal.document_config</field>
+            <field name="view_id" ref="l10n_co_fe.view_account_journal_document_config_form"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+</odoo>
