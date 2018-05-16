@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-      <record id="view_sequence_dte_caf_form" model="ir.ui.view">
-        <field name="name">ir.sequence.caf.form</field>
+      <record id="view_sequence_dian_rangos_form" model="ir.ui.view">
+        <field name="name">ir.sequence.rango.form</field>
         <field name="model">ir.sequence</field>
         <field name="inherit_id" ref="base.sequence_view" />
         <field name="arch" type="xml">
             <field name="number_next_actual" position="after">
                 <field name="dian_document_class_id" options="{'no_open': True, 'no_create': True}" required="True"/>
                 <field name="is_dte"/>
-                <field name="forced_by_caf"/>
+                <field name="forced_by_rango"/>
             </field>
             <xpath expr='//notebook' position="inside">
                 <page string="rangos Files"
                     attrs="{'invisible': [('is_dte','=',False)]}">
-                    <field name="dte_caf_ids"  context="{'default_sequence_id':active_id, 'default_company_id':company_id}">
+                    <field name="dian_rangos_ids"  context="{'default_sequence_id':active_id, 'default_company_id':company_id}">
                         <tree string="DTE rangos Files">
                             <field name="name"/>
-                            <field name="issued_date" readonly="1"/>
+                            <field name="issued_date"/>
+                            <field name="prefix" />
                             <field name="start_nm"/>
                             <field name="final_nm"/>
                             <field name="use_level" widget="progressbar"/>
@@ -29,7 +30,7 @@
         </field>
       </record>
 
-      <record id="view_dte_caf_form" model="ir.ui.view">
+      <record id="view_dian_rangos_form" model="ir.ui.view">
           <field name="name">dian.rangos.form</field>
           <field name="model">dian.rangos</field>
           <field name="arch" type="xml">
@@ -44,18 +45,20 @@
                           </h1>
                       </div>
                       <group col="4">
-                          <field name="caf_file" filename="filename" attrs="{'invisible':[('status', '!=', 'draft')]}"/>
+                          <field name="rango_file" filename="filename" attrs="{'invisible':[('status', '!=', 'draft')]}"/>
                           <field name="filename" invisible="1"/>
                       </group>
                       <group col="4">
                           <field name="dian_document_class"/>
                           <field name="issued_date"/>
+                          <field name="prefix" />
                           <field name="start_nm"/>
                           <field name="final_nm"/>
+                          <field name="date_start" />
+                          <field name="date_end" />
+                          <field name="code" />
                           <field name="company_id"/>
-                          <field name="rut_n"/>
                           <field name="sequence_id"/>
-                              <!--context="{'default_dte_caf_id':  active_id}"-->
                           <field name="use_level" widget="progressbar" backgrounds="blue:status == 'in_use';red:status == 'spent'"/>
                       </group>
                   </sheet>
@@ -63,7 +66,7 @@
           </field>
       </record>
 
-      <record id="view_dte_caf_tree" model="ir.ui.view">
+      <record id="view_dian_rangos_tree" model="ir.ui.view">
           <field name="name">rangos</field>
           <field name="model">dian.rangos</field>
           <field name="arch" type="xml">
@@ -80,7 +83,7 @@
       </record>
 
 
-      <record model="ir.actions.act_window" id="action_caf_files">
+      <record model="ir.actions.act_window" id="action_rango_files">
           <field name="name">DIAN rangos Files for DTE</field>
           <field name="type">ir.actions.act_window</field>
           <field name="res_model">dian.rangos</field>
@@ -92,8 +95,8 @@
       </record>
 
       <menuitem name="DIAN rangos Files for DTE"
-          id="menu_action_caf_files"
-          action="action_caf_files"
+          id="menu_action_rango_files"
+          action="action_rango_files"
           parent="l10n_co_fe.menu_dian_config"
           sequence="26"/>
     </data>

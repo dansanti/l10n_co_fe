@@ -81,7 +81,7 @@ class account_journal(models.Model):
         for journal in self:
             currency = journal.currency_id or journal.company_id.currency_id
             name = "%s (%s)" % (journal.name, currency.name)
-            if journal.sucursal_id and self.env.context.get('show_full_name', False):
-                name = "%s (%s)" % (name, journal.sucursal_id.name)
+            #if journal.sucursal_id and self.env.context.get('show_full_name', False):
+            #    name = "%s (%s)" % (name, journal.sucursal_id.name)
             res.append((journal.id, name))
         return res
