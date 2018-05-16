@@ -12,10 +12,10 @@
                 <field name="forced_by_caf"/>
             </field>
             <xpath expr='//notebook' position="inside">
-                <page string="CAF Files"
+                <page string="rangos Files"
                     attrs="{'invisible': [('is_dte','=',False)]}">
                     <field name="dte_caf_ids"  context="{'default_sequence_id':active_id, 'default_company_id':company_id}">
-                        <tree string="DTE CAF Files">
+                        <tree string="DTE rangos Files">
                             <field name="name"/>
                             <field name="issued_date" readonly="1"/>
                             <field name="start_nm"/>
@@ -30,10 +30,10 @@
       </record>
 
       <record id="view_dte_caf_form" model="ir.ui.view">
-          <field name="name">dte.caf.form</field>
-          <field name="model">dte.caf</field>
+          <field name="name">dian.rangos.form</field>
+          <field name="model">dian.rangos</field>
           <field name="arch" type="xml">
-              <form string="DIAN CAF Files for DTE">
+              <form string="DIAN rangos Files for DTE">
                   <header>
                       <field name="status" widget="statusbar"/>
                   </header>
@@ -64,10 +64,10 @@
       </record>
 
       <record id="view_dte_caf_tree" model="ir.ui.view">
-          <field name="name">CAF</field>
-          <field name="model">dte.caf</field>
+          <field name="name">rangos</field>
+          <field name="model">dian.rangos</field>
           <field name="arch" type="xml">
-              <tree string="CAF Files" colors="blue:status == 'draft';black:status == 'in_use';gray:status == 'spent';red:status == 'cancelled'">
+              <tree string="rangos Files" colors="blue:status == 'draft';black:status == 'in_use';gray:status == 'spent';red:status == 'cancelled'">
                   <field name="name"/>
                   <field name="dian_document_class"/>
                   <field name="start_nm" />
@@ -81,17 +81,17 @@
 
 
       <record model="ir.actions.act_window" id="action_caf_files">
-          <field name="name">DIAN CAF Files for DTE</field>
+          <field name="name">DIAN rangos Files for DTE</field>
           <field name="type">ir.actions.act_window</field>
-          <field name="res_model">dte.caf</field>
+          <field name="res_model">dian.rangos</field>
           <field name="view_type">form</field>
           <field name="view_mode">tree,form</field>
           <field name="help" type="html">
-              <p class="oe_view_nocontent_create">Please input CAF File</p>
+              <p class="oe_view_nocontent_create">Please input rangos File</p>
           </field>
       </record>
 
-      <menuitem name="DIAN CAF Files for DTE"
+      <menuitem name="DIAN rangos Files for DTE"
           id="menu_action_caf_files"
           action="action_caf_files"
           parent="l10n_co_fe.menu_dian_config"

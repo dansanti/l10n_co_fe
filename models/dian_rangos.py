@@ -16,7 +16,7 @@ except ImportError:
     pass
 
 class caf(models.Model):
-    _name = 'dte.caf'
+    _name = 'dian.rangos'
 
     @api.depends('caf_file')
     def _compute_data(self):
@@ -33,10 +33,10 @@ class caf(models.Model):
             string='File Name',
         )
     caf_file = fields.Binary(
-            string='CAF XML File',
+            string='rangos XML File',
             filters='*.xml',
             required=True,
-            help='Upload the CAF XML File in this holder',
+            help='Upload the rangos XML File in this holder',
         )
     issued_date = fields.Date(
             string='Issued Date',
@@ -50,13 +50,13 @@ class caf(models.Model):
         )
     start_nm = fields.Integer(
             string='Start Number',
-            help='CAF Starts from this number',
+            help='rangos Starts from this number',
             compute='_compute_data',
             store=True,
         )
     final_nm = fields.Integer(
             string='End Number',
-            help='CAF Ends to this number',
+            help='rangos Ends to this number',
             compute='_compute_data',
             store=True,
         )
@@ -99,7 +99,7 @@ has been exhausted.''',
     def load_caf(self, flags=False):
         if not self.caf_file:
             return
-        result = self.decode_caf()['AUTORIZACION']['CAF']['DA']
+        result = self.decode_caf()['AUTORIZACION']['rangos']['DA']
         self.start_nm = result['RNG']['D']
         self.final_nm = result['RNG']['H']
         self.dian_document_class = result['TD']
@@ -110,7 +110,7 @@ has been exhausted.''',
                 'Company vat %s should be the same that assigned company\'s vat: %s!') % (self.rut_n, self.company_id.vat))
         elif self.dian_document_class != self.sequence_id.dian_document_class_id.dian_code:
             raise UserError(_(
-                '''DIAN Document Type for this CAF is %s and selected sequence associated document class is %s. This values should be equal for DTE Invoicing to work properly!''') % (self.dian_document_class, self.sequence_id.dian_document_class_id.dian_code))
+                '''DIAN Document Type for this rangos is %s and selected sequence associated document class is %s. This values should be equal for DTE Invoicing to work properly!''') % (self.dian_document_class, self.sequence_id.dian_document_class_id.dian_code))
         if flags:
             return True
         self.status = 'in_use'
@@ -176,7 +176,7 @@ class sequence_caf(models.Model):
             related='dian_document_class_id.dte',
         )
     dte_caf_ids = fields.One2many(
-            'dte.caf',
+            'dian.rangos',
             'sequence_id',
             string='DTE Caf',
         )
@@ -185,7 +185,7 @@ class sequence_caf(models.Model):
             compute="_qty_available"
         )
     forced_by_caf = fields.Boolean(
-            string="Forced By CAF",
+            string="Forced By rangos",
             default=True,
         )
 
@@ -196,11 +196,11 @@ class sequence_caf(models.Model):
         folio = folio or self._get_folio()
         caffiles = self.get_caf_files(folio)
         if not caffiles:
-            raise UserError(_('''No hay caf disponible para el documento %s folio %s. Por favor solicite suba un CAF o solicite uno en el DIAN.''' % (self.name, folio)))
+            raise UserError(_('''No hay caf disponible para el documento %s folio %s. Por favor solicite suba un rangos o solicite uno en el DIAN.''' % (self.name, folio)))
         for caffile in caffiles:
             if int(folio) >= caffile.start_nm and int(folio) <= caffile.final_nm:
                 return caffile.decode_caf()
-        msg = '''No Hay caf para el documento: {}, está fuera de rango . Solicite un nuevo CAF en el sitio \
+        msg = '''No Hay caf para el documento: {}, está fuera de rango . Solicite un nuevo rangos en el sitio \
 www.dian.cl'''.format(folio)
         raise UserError(_(msg))
 
@@ -210,7 +210,7 @@ www.dian.cl'''.format(folio)
         '''
         folio = folio or self._get_folio()
         if not self.dte_caf_ids:
-            raise UserError(_('''No hay CAFs disponibles para la secuencia de %s. Por favor suba un CAF o solicite uno en el DIAN.''' % (self.name)))
+            raise UserError(_('''No hay rangoss disponibles para la secuencia de %s. Por favor suba un rangos o solicite uno en el DIAN.''' % (self.name)))
         cafs = self.dte_caf_ids
         sorted(cafs, key=lambda e: e.start_nm)
         result = []
@@ -226,7 +226,7 @@ www.dian.cl'''.format(folio)
         menor = False
         cafs = self.get_caf_files(folio)
         if not cafs:
-            raise UserError(_('No quedan CAFs para %s disponibles') % self.name)
+            raise UserError(_('No quedan rangoss para %s disponibles') % self.name)
         for c in cafs:
             if not menor or c.start_nm < menor.start_nm:
                 menor = c
