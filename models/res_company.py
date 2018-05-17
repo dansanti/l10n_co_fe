@@ -153,6 +153,15 @@ class CompanySignature(models.Model):
     priv_key = fields.Text(string='Private Key', readonly=True)
     authorized_users_ids = fields.Many2many('res.users',
        string='Authorized Users')
+    provider_id = fields.Char(
+            string='Provider ID',
+        )
+    software_id = fields.Char(
+            string='Software ID',
+        )
+    software_pin = fields.Char(
+            string='Software PIN',
+        )
 
     @api.multi
     def action_clean1(self):

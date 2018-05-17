@@ -6,6 +6,13 @@
 		<field name="model">res.company</field>
 		<field name="arch" type="xml">
 			<xpath expr='//notebook' position="inside">
+				<page string="DIAN Provider">
+					<group>
+						<field name="provider_id" />
+						<field name="software_id" />
+						<field name="software_pin" />
+					</group>
+				</page>
 				<page string="Signature File">
 					<header>
 						<button string="Check Signature" type="object" name="action_process"

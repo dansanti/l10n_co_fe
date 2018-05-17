@@ -95,7 +95,7 @@ has been exhausted.''',
             string="Use Level",
             compute='_used_level',
         )
-    
+
     _sql_constraints = [
                 ('filename_unique','unique(filename)','Error! Filename Already Exist!'),
             ]
@@ -147,7 +147,7 @@ class sequence_rango(models.Model):
     def get_qty_available(self, folio=None):
         folio = folio or self._get_folio()
         try:
-            rangos = self.get_rango_files(folio)
+            rangos = self.get_rangos(folio)
         except:
             rangos = False
         available = 0
@@ -191,19 +191,19 @@ class sequence_rango(models.Model):
     def _get_folio(self):
         return self.number_next_actual
 
-    def get_rango_file(self, folio=False):
+    def get_rango(self, folio=False):
         folio = folio or self._get_folio()
-        rangofiles = self.get_rango_files(folio)
+        rangofiles = self.get_rangos(folio)
         if not rangofiles:
             raise UserError(_('''No hay rango disponible para el documento %s folio %s. Por favor solicite suba un rangos o solicite uno en el DIAN.''' % (self.name, folio)))
         for rangofile in rangofiles:
             if int(folio) >= rangofile.start_nm and int(folio) <= rangofile.final_nm:
-                return rangofile.decode_rango()
+                return rangofile
         msg = '''No Hay rango para el documento: {}, está fuera de rango . Solicite un nuevo rangos en el sitio \
 www.dian.cl'''.format(folio)
         raise UserError(_(msg))
 
-    def get_rango_files(self, folio=None):
+    def get_rangos(self, folio=None):
         '''
             Devuelvo rango actual y futuros
         '''
@@ -223,7 +223,7 @@ www.dian.cl'''.format(folio)
     def update_next_by_rango(self, folio=None):
         folio = folio or self._get_folio()
         menor = False
-        rangos = self.get_rango_files(folio)
+        rangos = self.get_rangos(folio)
         if not rangos:
             raise UserError(_('No quedan rangoss para %s disponibles') % self.name)
         for c in rangos:

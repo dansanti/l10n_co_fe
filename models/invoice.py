@@ -152,7 +152,7 @@ ValIva: 160.00
 ValOtroIm: 0.00
 ValFacIm: 1160.00
 CUFE: 2836a15058e90baabbf6bf2e97f05564ea0324a6'''
-            
+
             qr_code = pyqrcode.create(texto)
             img_as_str = qr_code.png_as_base64_str(scale=5)
             r.dian_barcode_img = img_as_str
@@ -784,27 +784,28 @@ CUFE: 2836a15058e90baabbf6bf2e97f05564ea0324a6'''
                                     })
 
     def _ssc(self):
-        SoftwareSecurityCode = sha-384(Identificador_software + PIN_software)
+        return hashlib.new('sha384', str(self.company_id.software_id) + str(self.company_id.software_pin))
 
     def _rangos(self, rangos):
+        rango = self.journal_document_class_id.sequence_id.get_rango()
         exten = SubElement(rangos, 'ext:UBLExtension')
         content = SubElement(exten,  'ext:ExtensionContent')
         dianExt = SubElement(content , 'sts:DianExtensions')
         ic = SubElement(dianExt , 'sts:InvoiceControl')
-        SubElement(ic , 'sts:InvoiceAuthorization').text = 9000000500017960
+        SubElement(ic , 'sts:InvoiceAuthorization').text = rango.code
         auth = SubElement(ic , 'sts:AuthorizationPeriod')
-        SubElement(auth , 'cbc:StartDate').text = "2016-07-11"
-        SubElement(auth , 'cbc:EndDate').text = "2018-07-11"
+        SubElement(auth , 'cbc:StartDate').text = rango.start_date
+        SubElement(auth , 'cbc:EndDate').text = rango.end_date
         auth_inv = SubElement(ic , 'sts:AuthorizedInvoices')
-        SubElement(auth_inv , 'sts:Prefix').text = "PRUE"
-        SubElement(auth_inv , 'sts:From').text = "980000000"
-        SubElement(auth_inv , 'sts:To').text = "985000000"
+        SubElement(auth_inv , 'sts:Prefix').text = rango.prefix
+        SubElement(auth_inv , 'sts:From').text = rango.start_nm
+        SubElement(auth_inv , 'sts:To').text = rango.final_nm
         inv_sec = SubElement(dianExt , 'sts:InvoiceSource')
         SubElement(inv_sec , 'cbc:IdentificationCode', attrib={"listAgencyID":"6", "listAgencyName":"United Nations Economic Commission for Europe", "listSchemeURI":"urn:oasis:names:specification:ubl:codelist:gc:CountryIdentificationCode-2.0"}).text = "CO"
         sp = SubElement(dianExt , 'sts:SoftwareProvider')
-        SubElement(sp , 'sts:ProviderID schemeAgencyID="195" schemeAgencyName="CO, DIAN (Direccion de Impuestos y Aduanas Nacionales)"').text = 900373115
-        SubElement(sp , 'sts:SoftwareID', attrib={ "schemeAgencyID":"195", "schemeAgencyName":"CO, DIAN (Direccion de Impuestos y Aduanas Nacionales)"}).text = "0d2e2883-eb8d-4237-87fe-28aeb71e961e"
-        SubElement(dianExt , 'sts:SoftwareSecurityCode', attrib={"schemeAgencyID":"195", "schemeAgencyName":"CO, DIAN (Direccion de Impuestos y Aduanas Nacionales)"}).text = "bdaa51c9953e08dcc8f398961f7cd0717cd5fbea356e937660aa1a8abbe31f4c9b4eb5cf8682eaca4c8523953253dcce"
+        SubElement(sp , 'sts:ProviderID schemeAgencyID="195" schemeAgencyName="CO, DIAN (Direccion de Impuestos y Aduanas Nacionales)"').text = self.company_id.provider_id
+        SubElement(sp , 'sts:SoftwareID', attrib={ "schemeAgencyID":"195", "schemeAgencyName":"CO, DIAN (Direccion de Impuestos y Aduanas Nacionales)"}).text = self.company_id.software_id
+        SubElement(dianExt , 'sts:SoftwareSecurityCode', attrib={"schemeAgencyID":"195", "schemeAgencyName":"CO, DIAN (Direccion de Impuestos y Aduanas Nacionales)"}).text = self._ssc()
 
     def _firma(self, firma):
         exten = SubElement(firma, 'ext:UBLExtension')
