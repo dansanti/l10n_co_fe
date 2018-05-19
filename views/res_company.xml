@@ -8,6 +8,7 @@
 			<xpath expr='//notebook' position="inside">
 				<page string="DIAN Provider">
 					<group>
+						<field name="dian_mode" />
 						<field name="provider_id" />
 						<field name="software_id" />
 						<field name="software_pin" />
@@ -21,8 +22,6 @@
 
 						<button string="Clean Signature" type="object" name="action_clean1"
 							attrs="{'invisible': [('status', '=', 'unverified')]}" />
-
-
 						<field name="status" widget="statusbar" />
 					</header>
 					<group attrs="{'invisible': [('status', '!=', 'unverified')]}">

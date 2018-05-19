@@ -19,17 +19,15 @@ try:
     from io import BytesIO
 except:
     _logger.warning("no se ha cargado io")
-import traceback as tb
-import suds.metrics as metrics
 
 try:
     from suds.client import Client
 except:
-    pass
+    _logger.warning("no se ha cargado suds")
 try:
     import textwrap
 except:
-    pass
+    _logger.warning("no se ha cargado textwrap")
 
 try:
     from cryptography.hazmat.backends import default_backend
@@ -72,7 +70,7 @@ except ImportError:
 
 server_url = {
     'CERT':'https://facturaelectronica.dian.gov.co/habilitacion/B2BIntegrationEngine/FacturaElectronica/facturaElectronica.wsdl?',
-    'DIAN':'https://facturaelectronica.dian.gov.co/operacion/B2BIntegrationEngine/FacturaElectronica/facturaElectronica.wsdl?',
+    'PROD':'https://facturaelectronica.dian.gov.co/operacion/B2BIntegrationEngine/FacturaElectronica/facturaElectronica.wsdl?',
 }
 
 BC = '''-----BEGIN CERTIFICATE-----\n'''
@@ -589,7 +587,7 @@ CUFE: 2836a15058e90baabbf6bf2e97f05564ea0324a6'''
                                                 'user_id':self.env.user.id,
                                                 'tipo_trabajo': 'pasivo',
                                                 'date_time': tiempo_pasivo,
-                                                'send_email': False if inv.company_id.dte_service_provider=='CERT' or self.env['ir.config_parameter'].sudo().get_param('account.auto_send_email', default=True) else True,
+                                                'send_email': False if inv.company_id.dian_mode=='CERT' or self.env['ir.config_parameter'].sudo().get_param('account.auto_send_email', default=True) else True,
                                                 })
             if inv.purchase_to_done:
                 for ptd in inv.purchase_to_done:
@@ -780,7 +778,7 @@ CUFE: 2836a15058e90baabbf6bf2e97f05564ea0324a6'''
                                     'user_id':self.env.user.id,
                                     'tipo_trabajo': 'envio',
                                     'n_atencion': n_atencion,
-                                    'send_email': False if self[0].company_id.dte_service_provider=='CERT' or self.env['ir.config_parameter'].sudo().get_param('account.auto_send_email', default=True) else True,
+                                    'send_email': False if self[0].company_id.dian_mode=='CERT' or self.env['ir.config_parameter'].sudo().get_param('account.auto_send_email', default=True) else True,
                                     })
 
     def _ssc(self):

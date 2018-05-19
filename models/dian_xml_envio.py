@@ -119,7 +119,7 @@ class DIANXMLEnvio(models.Model):
             ssl._create_default_https_context = ssl._create_unverified_context
         except:
             pass
-        url = server_url[company_id.dte_service_provider] + 'CrSeed.jws?WSDL'
+        url = server_url[company_id.dian_mode] + 'CrSeed.jws?WSDL'
         _server = Client(url)
         resp = _server.service.getSeed().replace('<?xml version="1.0" encoding="UTF-8"?>','')
         root = etree.fromstring(resp)
@@ -144,7 +144,7 @@ class DIANXMLEnvio(models.Model):
         return msg
 
     def _get_token(self, seed_file, company_id):
-        url = server_url[company_id.dte_service_provider] + 'GetTokenFromSeed.jws?WSDL'
+        url = server_url[company_id.dian_mode] + 'GetTokenFromSeed.jws?WSDL'
         _server = Client(url)
         tree = etree.fromstring(seed_file)
         ss = etree.tostring(tree, pretty_print=True, encoding='iso-8859-1').decode()
@@ -189,11 +189,11 @@ class DIANXMLEnvio(models.Model):
 
     def send_xml(self, post='/cgi_dte/UPL/DTEUpload'):
         retorno = { 'state': 'NoEnviado' }
-        if not self.company_id.dte_service_provider:
+        if not self.company_id.dian_mode:
             raise UserError(_("Not Service provider selected!"))
         token = self.get_token( self.user_id, self.company_id )
         url = 'https://palena.dian.cl'
-        if self.company_id.dte_service_provider == 'DIANCERT':
+        if self.company_id.dian_mode == 'DIANCERT':
             url = 'https://maullin.dian.cl'
         headers = {
             'Accept': 'image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-powerpoint, application/ms-excel, application/msword, */*',
@@ -220,7 +220,7 @@ class DIANXMLEnvio(models.Model):
     def get_send_status(self, user_id=False):
         user_id = user_id or self.user_id
         token = self.get_token( user_id, self.company_id )
-        url = server_url[self.company_id.dte_service_provider] + 'QueryEstUp.jws?WSDL'
+        url = server_url[self.company_id.dian_mode] + 'QueryEstUp.jws?WSDL'
         _server = Client(url)
         rut = self.invoice_ids.format_vat( self.company_id.vat, con_cero=True)
         respuesta = _server.service.getEstUp(

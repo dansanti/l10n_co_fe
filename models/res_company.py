@@ -103,23 +103,45 @@ class CompanySignature(models.Model):
 
         self.dec_pass = False
 
-    filename = fields.Char(string='File Name')
+    filename = fields.Char(
+            string='File Name',
+        )
     key_file = fields.Binary(
-        string='Signature File', required=False, store=True,
-        help='Upload the Signature File')
-    dec_pass = fields.Char(string='Pasword')
+            string='Signature File',
+            required=False,
+            store=True,
+            help='Upload the Signature File',
+        )
+    dec_pass = fields.Char(
+            string='Pasword',
+        )
     # vigencia y estado
     not_before = fields.Date(
-        string='Not Before', help='Not Before this Date', readonly=True)
+            string='Not Before',
+            help='Not Before this Date',
+            readonly=True,
+        )
     not_after = fields.Date(
-        string='Not After', help='Not After this Date', readonly=True)
+            string='Not After',
+            help='Not After this Date',
+            readonly=True,
+        )
     status = fields.Selection(
-        [('unverified', 'Unverified'), ('valid', 'Valid'), ('expired', 'Expired')],
-        string='Status', default=default_status,
-        help='''Draft: means it has not been checked yet.\nYou must press the\
-"check" button.''')
+            [
+                ('unverified', 'Unverified'),
+                ('valid', 'Valid'),
+                ('expired', 'Expired'),
+            ],
+            string='Status',
+            default=default_status,
+            help='''Draft: means it has not been checked yet.\nYou must press the\
+"check" button.''',
+        )
     final_date = fields.Date(
-        string='Last Date', help='Last Control Date', readonly=True)
+            string='Last Date',
+            help='Last Control Date',
+            readonly=True,
+        )
     # sujeto
     subject_title = fields.Char(string='Subject Title', readonly=True)
     subject_c = fields.Char(string='Subject Country', readonly=True)
@@ -162,6 +184,13 @@ class CompanySignature(models.Model):
     software_pin = fields.Char(
             string='Software PIN',
         )
+    dian_mode = fields.Selection(
+        [
+            ('CERT', 'Certification'),
+            ('PROD', 'Production'),
+        ],
+        string="DIAN Mode",
+    )
 
     @api.multi
     def action_clean1(self):
