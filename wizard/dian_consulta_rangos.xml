@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="consulta_rangos_view_form" model="ir.ui.view">
+    <field name="name">consulta_rangos.form</field>
+    <field name="model">dian.consulta_rangos</field>
+    <field name="arch" type="xml">
+      <form string="Consulta Rangos">
+        <sheet>
+          <group>
+            <field name="result"/>
+            <field name="type"/>
+            <field name="company_id"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_consulta_rangos_view_form" model="ir.actions.act_window">
+      <field name="name">Consulta de Rangos</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">dian.consulta_rangos</field>
+      <field name="view_id" ref="l10n_co_fe.consulta_rangos_view_form"/>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+  </record>
+</odoo>

@@ -190,6 +190,7 @@ class CompanySignature(models.Model):
             ('PROD', 'Production'),
         ],
         string="DIAN Mode",
+        default="CERT",
     )
 
     @api.multi

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from odoo import fields, models, api
 from odoo.tools.translate import _
-#from .invoice import server_url
+from datetime import datetime, timedelta, date
 from lxml import etree
+import pytz
 import collections
 import logging
 _logger = logging.getLogger(__name__)
@@ -15,6 +16,8 @@ except:
 
 try:
     from suds.client import Client
+    from suds.sax.element import Element
+    from suds.sax.attribute import Attribute
 except:
     _logger.warning("no se ha cargado suds")
 try:
@@ -113,56 +116,41 @@ class DIANXMLEnvio(models.Model):
             result.append((r.id, name))
         return result
 
-    def get_seed(self, company_id):
-        try:
-            import ssl
-            ssl._create_default_https_context = ssl._create_unverified_context
-        except:
-            pass
-        url = server_url[company_id.dian_mode] + 'CrSeed.jws?WSDL'
-        _server = Client(url)
-        resp = _server.service.getSeed().replace('<?xml version="1.0" encoding="UTF-8"?>','')
-        root = etree.fromstring(resp)
-        semilla = root[0][0].text
-        return semilla
+    def password_hash(self, digest=False):
+        pass_hash = hashlib.new('sha256', company_id.software_id)
+        if digest:
+            return base64b64encode(pass_hash.digest()).decode()
+        return pass_hash.hexdigest()
 
-    def create_template_seed(self, seed):
-        xml = u'''<getToken>
-<item>
-<Semilla>{}</Semilla>
-</item>
-</getToken>
-'''.format(seed)
-        return xml
 
-    def sign_seed(self, message, privkey, cert):
-        doc = etree.fromstring(message)
-        signed_node = XMLSigner(method=methods.enveloped, digest_algorithm='sha1').sign(
-            doc, key=privkey.encode('ascii'), cert=cert)
-        msg = etree.tostring(
-            signed_node, pretty_print=True).decode().replace('ds:', '')
-        return msg
-
-    def _get_token(self, seed_file, company_id):
-        url = server_url[company_id.dian_mode] + 'GetTokenFromSeed.jws?WSDL'
-        _server = Client(url)
-        tree = etree.fromstring(seed_file)
-        ss = etree.tostring(tree, pretty_print=True, encoding='iso-8859-1').decode()
-        resp = _server.service.getToken(ss).replace('<?xml version="1.0" encoding="UTF-8"?>','')
-        respuesta = etree.fromstring(resp)
-        token = respuesta[0][0].text
-        return token
-
-    def get_token(self, user_id, company_id):
-        signature_d = user_id.get_digital_signature( company_id )
-        seed = self.get_seed( company_id )
-        template_string = self.create_template_seed( seed )
-        seed_firmado = self.sign_seed(
-                template_string,
-                signature_d['priv_key'],
-                signature_d['cert'],
-            )
-        return self._get_token(seed_firmado, company_id)
+    def security_header(self, user_id,  Nonce=False, digestPassword=False):
+        ssnp = Element("wsse:Security")
+        ssnp.append(Attribute('SOAP-ENV:mustUnderstand', 'true'))
+        ssnp.attributes.append(Attribute('xmlns:wsse',"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"))
+        ssnp.attributes.append(Attribute('xmlns:wsu',"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"))
+        UNT = Element('wsse:UsernameToken')
+        UNT.attributes.append(Attribute('Id',"UsernameToken-1"))
+        Username = Element('wsse:Username')
+        Username.setText(self.company_id.software_id)
+        Password = Element('wsse:Password')
+        pass_hash =  self.password_hash()
+        if digestPassword:
+            Password.attributes.append(Attribute('Type','http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#Digest'))
+            pass_hash =  self.password_hash(digest=True)
+        Password.setText(pass_hash)
+        UNT.append(Username)
+        UNT.append(Password)
+        if Nonce:
+            NONCE = Element('wsse:Nonce')
+            NONCE.setText(base64.b64encode(str(random.random()).encode()).decode())
+            NONCE.attributes.append(Attribute('EncodingType',"http://docs.oasis-open.org/wss/2004/01/oasis200401-wss-soap-message-security1.0#Base64Binary"))
+            formato='%Y-%m-%dT%H:%M:%S.523Z'
+            tz = pytz.timezone('America/Bogota')
+            CREATED = Element('wsu:Created').setText(datetime.now(tz).strftime(formato))
+            UNT.append(NONCE)
+            UNT.append(CREATED)
+        ssnp.append(UNT)
+        return ssnp
 
     def init_params(self):
         params = collections.OrderedDict()

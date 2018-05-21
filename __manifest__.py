@@ -39,6 +39,7 @@ Facturación Electrónica para Colombia.
     },
     'data': [
             'wizard/journal_config_wizard_view.xml',
+            'wizard/dian_consulta_rangos.xml',
             'views/account_journal_dian_document_class_view.xml',
             'views/journal_view.xml',
             'views/dian_menuitem.xml',
@@ -47,7 +48,6 @@ Facturación Electrónica para Colombia.
             'views/res_user.xml',
             'views/res_company.xml',
             'views/invoice_view.xml',
-
     ],
     'installable': True,
     'auto_install': False,
